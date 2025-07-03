@@ -12,8 +12,21 @@ import threading
 import time
 import shutil
 import subprocess
+import traceback
 from pathlib import Path
 from tkinter import filedialog
+
+# Import the logger first to set it up before anything else
+try:
+    from logger import logger, get_log_file_path
+    logger.info("Starting AI Old Photo Restoration Tool")
+except Exception as e:
+    print(f"Failed to initialize logger: {e}")
+    # Set up a basic logger if the custom logger fails
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger("ai_photo_restore_fallback")
+    logger.warning("Using fallback logger due to initialization error")
 
 # Check if running within the depression conda environment
 def is_in_conda_env():
@@ -154,6 +167,11 @@ class PhotoRestorationApp:
         file_menu.add_command(label="Save Restored Image...", command=self.save_image)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.root.quit)
+        
+        # Tools menu
+        tools_menu = ttk.Menu(menubar, tearoff=False)
+        menubar.add_cascade(label="Tools", menu=tools_menu)
+        tools_menu.add_command(label="View Logs", command=lambda: self.open_log_file(get_log_file_path()))
         
         # Help menu
         help_menu = ttk.Menu(menubar, tearoff=False)
@@ -385,36 +403,70 @@ class PhotoRestorationApp:
             canvas: The canvas to display the image on
             image: PIL Image object to display
         """
-        canvas.delete("all")
-        
-        # Get canvas dimensions
-        canvas_width = canvas.winfo_width() or 800
-        canvas_height = canvas.winfo_height() or 600
-        
-        # Calculate scale to fit image in canvas
-        img_width, img_height = image.size
-        scale = min(canvas_width / img_width, canvas_height / img_height)
-        
-        # Scale image
-        if scale < 1:
-            new_width = int(img_width * scale)
-            new_height = int(img_height * scale)
-            display_image = image.resize((new_width, new_height), Image.LANCZOS)
-        else:
-            display_image = image
-        
-        # Convert to PhotoImage for tkinter
-        photo = ImageTk.PhotoImage(display_image)
-        
-        # Keep a reference to prevent garbage collection
-        canvas.image = photo
-        
-        # Calculate position for centering
-        x = (canvas_width - display_image.width) // 2
-        y = (canvas_height - display_image.height) // 2
-        
-        # Display the image
-        canvas.create_image(x, y, anchor=NW, image=photo)
+        try:
+            canvas.delete("all")
+            
+            # Verify image is valid
+            if image is None:
+                self.show_canvas_message(canvas, "No image to display")
+                return
+                
+            # Force load the image to catch errors early
+            image.load()
+            
+            # Check image dimensions
+            img_width, img_height = image.size
+            if img_width <= 0 or img_height <= 0:
+                self.show_canvas_message(canvas, f"Invalid image dimensions: {image.size}")
+                logger.error(f"Cannot display image with invalid dimensions: {image.size}")
+                return
+            
+            # Get canvas dimensions
+            canvas_width = canvas.winfo_width() or 800
+            canvas_height = canvas.winfo_height() or 600
+            
+            # Calculate scale to fit image in canvas
+            scale = min(canvas_width / max(img_width, 1), canvas_height / max(img_height, 1))
+            
+            # Scale image
+            try:
+                if scale < 1:
+                    new_width = max(int(img_width * scale), 1)
+                    new_height = max(int(img_height * scale), 1)
+                    display_image = image.resize((new_width, new_height), Image.LANCZOS)
+                else:
+                    display_image = image
+            except Exception as resize_err:
+                logger.error(f"Error resizing image: {resize_err}, trying simpler resize method")
+                # Fallback to simpler resize method
+                if scale < 1:
+                    new_width = max(int(img_width * scale), 1)
+                    new_height = max(int(img_height * scale), 1)
+                    display_image = image.resize((new_width, new_height), Image.NEAREST)
+                else:
+                    display_image = image
+            
+            # Convert to PhotoImage for tkinter
+            try:
+                photo = ImageTk.PhotoImage(display_image)
+                
+                # Keep a reference to prevent garbage collection
+                canvas.image = photo
+                
+                # Calculate position for centering
+                x = (canvas_width - display_image.width) // 2
+                y = (canvas_height - display_image.height) // 2
+                
+                # Display the image
+                canvas.create_image(x, y, anchor=NW, image=photo)
+            except Exception as img_err:
+                logger.error(f"Error creating PhotoImage: {img_err}")
+                self.show_canvas_message(canvas, f"Error displaying image: {str(img_err)}")
+                
+        except Exception as e:
+            logger.error(f"Error in display_image: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            self.show_canvas_message(canvas, f"Error displaying image: {str(e)}")
 
     def process_image(self):
         """Process the current image using Real-ESRGAN."""
@@ -443,20 +495,28 @@ class PhotoRestorationApp:
                     self.current_input_image.save(temp_input)
                     input_path = temp_input
                 
-                # Process the image
+                # Process the image with some debugging settings
+                logger.debug(f"Processing with parameters: model={model_name}, scale={scale}, face_enhance={face_enhance}")
+                
+                # If this is the first run after fixing issues, try with standard parameters
                 output_path = self.restorer.restore_image(
                     input_path,
-                    model_name=model_name,
-                    outscale=scale,
-                    face_enhance=face_enhance
+                    model_name=model_name,  # Try the default model
+                    outscale=2.0,           # Use standard scale
+                    face_enhance=False      # Disable face enhancement for simplicity
                 )
                 
                 # Update UI in the main thread
                 self.root.after(0, lambda: self.display_result(output_path))
             
             except Exception as e:
+                # Log the full exception with traceback
+                error_message = str(e)
+                logger.error(f"Error during single image processing: {error_message}")
+                logger.error(f"Traceback: {traceback.format_exc()}")
+                
                 # Handle errors in the main thread
-                self.root.after(0, lambda: self.handle_process_error(str(e)))
+                self.root.after(0, lambda error=error_message: self.handle_process_error(error))
         
         # Start the processing thread
         threading.Thread(target=process_thread, daemon=True).start()
@@ -472,55 +532,220 @@ class PhotoRestorationApp:
         self.status_var.set("Processing completed.")
         
         try:
-            # Load the output image
-            output_image = Image.open(output_path)
-            self.current_output_image = output_image.copy()
-            self.output_path = output_path
+            logger.debug(f"Loading output image from: {output_path}")
+            # Check file size
+            file_size = os.path.getsize(output_path)
+            logger.debug(f"Output file size: {file_size} bytes")
             
-            # Display in After tab
-            self.display_image(self.after_canvas, output_image)
+            try:
+                # Try loading with CV2 first, then convert to PIL
+                try:
+                    import cv2
+                    import numpy as np
+                    logger.debug(f"Attempting to load image with OpenCV: {output_path}")
+                    cv_img = cv2.imread(output_path)
+                    if cv_img is None:
+                        raise ValueError("OpenCV could not load the image (None returned)")
+                    
+                    # Check if image is all zeros (black)
+                    if np.sum(cv_img) == 0:
+                        logger.error("Image loaded but is completely black (all zeros)")
+                    else:
+                        logger.debug(f"OpenCV loaded image with shape: {cv_img.shape}, non-zero pixels: {np.count_nonzero(cv_img)}")
+                        
+                        # Detailed pixel value analysis
+                        min_val = np.min(cv_img)
+                        max_val = np.max(cv_img)
+                        mean_val = np.mean(cv_img)
+                        std_val = np.std(cv_img)
+                        logger.debug(f"Pixel stats - Min: {min_val}, Max: {max_val}, Mean: {mean_val}, StdDev: {std_val}")
+                        
+                        # Analyze color channels separately
+                        for i, channel in enumerate(['B', 'G', 'R']):
+                            ch_min = np.min(cv_img[:,:,i])
+                            ch_max = np.max(cv_img[:,:,i])
+                            ch_mean = np.mean(cv_img[:,:,i])
+                            logger.debug(f"Channel {channel} - Min: {ch_min}, Max: {ch_max}, Mean: {ch_mean}")
+                        
+                        # Let's save a copy of the image for verification
+                        debug_output = os.path.join("output", "debug_copy.png")
+                        cv2.imwrite(debug_output, cv_img)
+                        logger.debug(f"Saved debug copy to: {debug_output}")
+                    
+                    # Convert from BGR to RGB
+                    cv_img_rgb = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+                    # Convert to PIL
+                    output_image = Image.fromarray(cv_img_rgb)
+                    logger.debug(f"Converted OpenCV image to PIL Image")
+                except Exception as cv_err:
+                    logger.warning(f"Failed to load with OpenCV: {cv_err}, trying PIL instead")
+                    # Fallback to PIL
+                    output_image = Image.open(output_path)
+                    output_image.load()
+                
+                img_size = output_image.size
+                img_mode = output_image.mode
+                logger.debug(f"Image successfully opened: {img_size}, {img_mode}")
+                
+                # Verify image has valid dimensions
+                if output_image.width <= 0 or output_image.height <= 0:
+                    raise ValueError(f"Invalid image dimensions: {img_size}")
+                
+                self.current_output_image = output_image.copy()
+                self.output_path = output_path
+                
+                # Display in After tab
+                self.display_image(self.after_canvas, output_image)
+                
+                # Create comparison view
+                self.create_comparison_view()
+                
+                # Switch to After tab
+                self.view_notebook.select(1)
             
-            # Create comparison view
-            self.create_comparison_view()
-            
-            # Switch to After tab
-            self.view_notebook.select(1)
+            except Exception as img_error:
+                # Specific handling for image loading errors
+                logger.error(f"Error loading output image: {str(img_error)}")
+                logger.error(f"Image error traceback: {traceback.format_exc()}")
+                
+                # Try a different display approach
+                try:
+                    import cv2
+                    import numpy as np
+                    
+                    # Try to use OpenCV for display
+                    logger.debug("Attempting alternative display approach with raw OpenCV")
+                    cv_img = cv2.imread(output_path)
+                    
+                    if cv_img is not None:
+                        # Create a simple window and display image
+                        cv_window_name = "Restored Image"
+                        cv2.namedWindow(cv_window_name, cv2.WINDOW_NORMAL)
+                        cv2.imshow(cv_window_name, cv_img)
+                        cv2.waitKey(1)  # Just to refresh
+                        logger.debug("Opened image in OpenCV window")
+                        
+                        # Create a photo-viewer-friendly copy with a different filename
+                        viewer_copy = os.path.join("output", "viewer_copy.jpg")
+                        cv2.imwrite(viewer_copy, cv_img)
+                        logger.debug(f"Created viewer-friendly copy: {viewer_copy}")
+                    else:
+                        logger.error("Failed to load image with OpenCV for direct display")
+                except Exception as e:
+                    logger.error(f"Error with alternative display approach: {str(e)}")
+                
+                # Try to open with system viewer instead
+                if Messagebox.yesno(
+                    "Image Display Error", 
+                    f"The image was processed successfully, but couldn't be displayed in the app.\n\n"
+                    f"Would you like to open it with your default image viewer?",
+                    parent=self.root
+                ) == "Yes":
+                    # Open the image with system default viewer
+                    try:
+                        # Try with the viewer copy first
+                        viewer_copy = os.path.join("output", "viewer_copy.jpg")
+                        if os.path.exists(viewer_copy):
+                            os.startfile(viewer_copy)
+                        else:
+                            os.startfile(output_path)
+                        self.status_var.set(f"Image opened in external viewer")
+                    except Exception as e:
+                        logger.error(f"Error opening image with system viewer: {str(e)}")
+                        self.status_var.set("Could not open image with external viewer")
         
         except Exception as e:
-            Messagebox.show_error("Error", f"Failed to load result: {str(e)}", parent=self.root)
-            self.status_var.set("Error displaying result.")
-
+            error_message = f"Failed to load result: {str(e)}"
+            logger.error(error_message)
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            
+            # Show more detailed error message
+            Messagebox.show_error(
+                "Error", 
+                f"Failed to load result from {output_path}:\n\n{str(e)}", 
+                parent=self.root
+            )
+    
     def handle_process_error(self, error_message):
         """Handle errors from the processing thread.
         
         Args:
             error_message: Error message to display
         """
+        logger.error(f"Image processing error: {error_message}")
+        
         self.progress.stop()
         self.progress.configure(mode="determinate", value=0)
         self.status_var.set("Processing failed.")
-        Messagebox.show_error("Processing Error", f"Failed to process image: {error_message}", parent=self.root)
+        
+        # Create a more detailed error message with log file information
+        log_file_path = get_log_file_path()
+        error_details = (
+            f"Failed to process image: {error_message}\n\n"
+            f"See the log file for more details:\n{log_file_path}\n\n"
+            "Would you like to open the log file now?"
+        )
+        
+        # Show error dialog with option to open log
+        response = Messagebox.show_error(
+            title="Processing Error", 
+            message=error_details, 
+            parent=self.root
+        )
+        
+        # Ask if user wants to open log file in a separate dialog
+        if Messagebox.yesno("View Log File", "Would you like to open the log file now?") == "Yes":
+            self.open_log_file(log_file_path)
 
     def create_comparison_view(self):
         """Create a side-by-side comparison of before and after images."""
         if self.current_input_image is None or self.current_output_image is None:
+            logger.warning("Cannot create comparison view - input or output image is missing")
             return
         
-        # Create a new image with both before and after
-        input_img = self.current_input_image.copy()
-        output_img = self.current_output_image.copy()
-        
-        # Resize output to match input dimensions for fair comparison
-        output_img = output_img.resize(input_img.size, Image.LANCZOS)
-        
-        # Create a combined image
-        total_width = input_img.width * 2
-        comparison = Image.new('RGB', (total_width, input_img.height))
-        comparison.paste(input_img, (0, 0))
-        comparison.paste(output_img, (input_img.width, 0))
-        
-        # Display in Compare tab
-        self.display_image(self.compare_canvas, comparison)
+        try:
+            # Create a new image with both before and after
+            input_img = self.current_input_image.copy()
+            output_img = self.current_output_image.copy()
+            
+            logger.debug(f"Creating comparison: input={input_img.size}, output={output_img.size}")
+            
+            # Force load to catch errors early
+            input_img.load()
+            output_img.load()
+            
+            # Check for valid dimensions
+            if input_img.width <= 0 or input_img.height <= 0 or output_img.width <= 0 or output_img.height <= 0:
+                raise ValueError("Invalid image dimensions for comparison")
+            
+            # Resize output to match input dimensions for fair comparison
+            try:
+                output_img = output_img.resize(input_img.size, Image.LANCZOS)
+            except Exception as resize_err:
+                logger.error(f"Error resizing image for comparison: {resize_err}")
+                # Try a simpler resize method if LANCZOS fails
+                output_img = output_img.resize(input_img.size, Image.NEAREST)
+            
+            # Create a combined image
+            total_width = input_img.width * 2
+            comparison = Image.new('RGB', (total_width, input_img.height))
+            comparison.paste(input_img, (0, 0))
+            comparison.paste(output_img, (input_img.width, 0))
+            
+            logger.debug(f"Comparison image created: {comparison.size}, {comparison.mode}")
+            
+            # Display in Compare tab
+            self.display_image(self.compare_canvas, comparison)
+            
+        except Exception as e:
+            logger.error(f"Error creating comparison view: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            
+            # Show simple message in the compare tab instead of image
+            self.show_canvas_message(
+                self.compare_canvas, 
+                f"Could not create comparison view: {str(e)}"
+            )
 
     def batch_process(self):
         """Process multiple images in a folder."""
@@ -621,7 +846,10 @@ class PhotoRestorationApp:
                     )
                     processed += 1
                 except Exception as e:
-                    errors.append(f"{filename}: {str(e)}")
+                    error_msg = f"{filename}: {str(e)}"
+                    logger.error(f"Batch processing error: {error_msg}")
+                    logger.error(f"Traceback: {traceback.format_exc()}")
+                    errors.append(error_msg)
             
             # Update UI in the main thread
             self.root.after(0, lambda: self.finish_batch(progress_window, processed, len(image_files), errors))
@@ -629,6 +857,18 @@ class PhotoRestorationApp:
         # Start batch processing thread
         threading.Thread(target=batch_thread, daemon=True).start()
 
+    def _show_success_message(self, total):
+        """Show a success message after batch processing.
+        
+        Args:
+            total: Total number of successfully processed images
+        """
+        Messagebox.show_info(
+            "Batch Processing Complete", 
+            f"Successfully processed all {total} images.",
+            parent=self.root
+        )
+    
     def finish_batch(self, progress_window, processed, total, errors):
         """Finalize batch processing and show results.
         
@@ -640,17 +880,41 @@ class PhotoRestorationApp:
         """
         progress_window.destroy()
         
-        if errors:
+        # Log the batch processing results
+        logger.info(f"Batch processing completed: {processed} of {total} images processed successfully")
+        
+        # If there were errors, show them with an option to view logs
+        if len(errors) > 0:
+            logger.warning(f"Batch processing had {len(errors)} errors")
+            
+            # Format error message
             error_msg = "\n".join(errors[:10])
             if len(errors) > 10:
                 error_msg += f"\n...and {len(errors) - 10} more errors."
             
+            # Create a more detailed error message with log file information
+            log_file_path = get_log_file_path()
+            
+            # Show warning dialog
+            msg = (f"Processed {processed} of {total} images with errors.\n\n"
+                  f"Errors:\n{error_msg}\n\n"
+                  f"See the log file for more details.")
+            
             Messagebox.show_warning(
                 "Batch Processing Results", 
-                f"Processed {processed} of {total} images.\n\nErrors:\n{error_msg}",
+                msg,
                 parent=self.root
             )
+            
+            # Ask if user wants to view logs
+            if Messagebox.okcancel(
+                "View Logs",
+                "Would you like to open the log file to see more details?",
+                parent=self.root
+            ):
+                self.open_log_file(log_file_path)
         else:
+            # Show success message if all images were processed successfully
             Messagebox.show_info(
                 "Batch Processing Complete", 
                 f"Successfully processed all {total} images.",
@@ -682,6 +946,38 @@ class PhotoRestorationApp:
             except Exception as e:
                 Messagebox.show_error("Save Error", f"Failed to save image: {str(e)}", parent=self.root)
 
+    def open_log_file(self, log_path):
+        """Open the log file in the default text editor.
+        
+        Args:
+            log_path: Path to the log file
+        """
+        logger.info(f"Opening log file: {log_path}")
+        path = os.path.abspath(log_path)
+        
+        if os.path.exists(path):
+            try:
+                if sys.platform == 'win32':
+                    os.startfile(path)
+                elif sys.platform == 'darwin':  # macOS
+                    subprocess.call(['open', path])
+                else:  # Linux
+                    subprocess.call(['xdg-open', path])
+            except Exception as e:
+                logger.error(f"Failed to open log file: {e}")
+                Messagebox.show_error(
+                    "Error", 
+                    f"Could not open log file. The file is located at:\n{path}", 
+                    parent=self.root
+                )
+        else:
+            logger.warning(f"Log file does not exist: {path}")
+            Messagebox.show_warning(
+                "Warning", 
+                f"Log file not found at {path}", 
+                parent=self.root
+            )
+    
     def show_about(self):
         """Show the about dialog."""
         Messagebox.show_info(
