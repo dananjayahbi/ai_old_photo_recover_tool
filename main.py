@@ -302,18 +302,56 @@ class PhotoRestorationApp:
         # Create canvases for images
         self.before_canvas = ttk.Canvas(self.before_frame, background="#f0f0f0")
         self.before_canvas.pack(fill=BOTH, expand=YES)
+        # Bind canvas resize event
+        self.before_canvas.bind("<Configure>", lambda e, canvas=self.before_canvas: self.on_canvas_resize(e, canvas))
         
         self.after_canvas = ttk.Canvas(self.after_frame, background="#f0f0f0")
         self.after_canvas.pack(fill=BOTH, expand=YES)
+        # Bind canvas resize event
+        self.after_canvas.bind("<Configure>", lambda e, canvas=self.after_canvas: self.on_canvas_resize(e, canvas))
         
         # Split view for comparison
         self.compare_canvas = ttk.Canvas(self.compare_frame, background="#f0f0f0")
         self.compare_canvas.pack(fill=BOTH, expand=YES)
+        # Bind canvas resize event
+        self.compare_canvas.bind("<Configure>", lambda e, canvas=self.compare_canvas: self.on_canvas_resize(e, canvas))
         
         # Default message when no image is loaded
         self.show_canvas_message(self.before_canvas, "No image loaded. Use 'Open Image' to load a photo.")
         self.show_canvas_message(self.after_canvas, "Restored image will appear here after processing.")
         self.show_canvas_message(self.compare_canvas, "Comparison view will be available after restoration.")
+
+    def on_canvas_resize(self, event, canvas):
+        """Handle canvas resize events to keep images centered.
+        
+        Args:
+            event: The resize event
+            canvas: The canvas being resized
+        """
+        # If canvas has an image, recenter it
+        if hasattr(canvas, 'image') and canvas.image:
+            # Get the current image
+            photo = canvas.image
+            
+            # Center the image using the updated canvas dimensions
+            x = event.width // 2
+            y = event.height // 2
+            
+            # Clear and redraw the image centered
+            canvas.delete("all")
+            canvas.create_image(x, y, anchor=CENTER, image=photo)
+        elif hasattr(canvas, 'original_image') and canvas.original_image:
+            # We have the original image but it needs to be redisplayed
+            # (this handles cases where window was resized but the image wasn't showing)
+            self.display_image(canvas, canvas.original_image)
+        else:
+            # Just show the default message
+            if canvas == self.before_canvas:
+                self.show_canvas_message(canvas, "No image loaded. Use 'Open Image' to load a photo.")
+            elif canvas == self.after_canvas:
+                self.show_canvas_message(canvas, "Restored image will appear here after processing.")
+            else:
+                self.show_canvas_message(canvas, "Comparison view will be available after restoration.")
 
     def show_canvas_message(self, canvas, message):
         """Show a message on the canvas when no image is displayed.
@@ -381,6 +419,9 @@ class PhotoRestorationApp:
             # Load image with PIL for better compatibility
             image = Image.open(image_path)
             self.current_input_image = image.copy()
+            
+            # Store image information for resize handling
+            self.before_canvas.original_image = self.current_input_image
             
             # Resize for display if needed
             self.display_image(self.before_canvas, image)
@@ -453,12 +494,12 @@ class PhotoRestorationApp:
                 # Keep a reference to prevent garbage collection
                 canvas.image = photo
                 
-                # Calculate position for centering
-                x = (canvas_width - display_image.width) // 2
-                y = (canvas_height - display_image.height) // 2
+                # Center the image using the CENTER anchor
+                x = canvas_width // 2
+                y = canvas_height // 2
                 
-                # Display the image
-                canvas.create_image(x, y, anchor=NW, image=photo)
+                # Display the image centered in the canvas
+                canvas.create_image(x, y, anchor=CENTER, image=photo)
             except Exception as img_err:
                 logger.error(f"Error creating PhotoImage: {img_err}")
                 self.show_canvas_message(canvas, f"Error displaying image: {str(img_err)}")
@@ -532,140 +573,29 @@ class PhotoRestorationApp:
         self.status_var.set("Processing completed.")
         
         try:
-            logger.debug(f"Loading output image from: {output_path}")
-            # Check file size
-            file_size = os.path.getsize(output_path)
-            logger.debug(f"Output file size: {file_size} bytes")
+            # Load the output image
+            output_image = Image.open(output_path)
+            self.current_output_image = output_image.copy()
+            self.output_path = output_path
             
-            try:
-                # Try loading with CV2 first, then convert to PIL
-                try:
-                    import cv2
-                    import numpy as np
-                    logger.debug(f"Attempting to load image with OpenCV: {output_path}")
-                    cv_img = cv2.imread(output_path)
-                    if cv_img is None:
-                        raise ValueError("OpenCV could not load the image (None returned)")
-                    
-                    # Check if image is all zeros (black)
-                    if np.sum(cv_img) == 0:
-                        logger.error("Image loaded but is completely black (all zeros)")
-                    else:
-                        logger.debug(f"OpenCV loaded image with shape: {cv_img.shape}, non-zero pixels: {np.count_nonzero(cv_img)}")
-                        
-                        # Detailed pixel value analysis
-                        min_val = np.min(cv_img)
-                        max_val = np.max(cv_img)
-                        mean_val = np.mean(cv_img)
-                        std_val = np.std(cv_img)
-                        logger.debug(f"Pixel stats - Min: {min_val}, Max: {max_val}, Mean: {mean_val}, StdDev: {std_val}")
-                        
-                        # Analyze color channels separately
-                        for i, channel in enumerate(['B', 'G', 'R']):
-                            ch_min = np.min(cv_img[:,:,i])
-                            ch_max = np.max(cv_img[:,:,i])
-                            ch_mean = np.mean(cv_img[:,:,i])
-                            logger.debug(f"Channel {channel} - Min: {ch_min}, Max: {ch_max}, Mean: {ch_mean}")
-                        
-                        # Let's save a copy of the image for verification
-                        debug_output = os.path.join("output", "debug_copy.png")
-                        cv2.imwrite(debug_output, cv_img)
-                        logger.debug(f"Saved debug copy to: {debug_output}")
-                    
-                    # Convert from BGR to RGB
-                    cv_img_rgb = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-                    # Convert to PIL
-                    output_image = Image.fromarray(cv_img_rgb)
-                    logger.debug(f"Converted OpenCV image to PIL Image")
-                except Exception as cv_err:
-                    logger.warning(f"Failed to load with OpenCV: {cv_err}, trying PIL instead")
-                    # Fallback to PIL
-                    output_image = Image.open(output_path)
-                    output_image.load()
-                
-                img_size = output_image.size
-                img_mode = output_image.mode
-                logger.debug(f"Image successfully opened: {img_size}, {img_mode}")
-                
-                # Verify image has valid dimensions
-                if output_image.width <= 0 or output_image.height <= 0:
-                    raise ValueError(f"Invalid image dimensions: {img_size}")
-                
-                self.current_output_image = output_image.copy()
-                self.output_path = output_path
-                
-                # Display in After tab
-                self.display_image(self.after_canvas, output_image)
-                
-                # Create comparison view
-                self.create_comparison_view()
-                
-                # Switch to After tab
-                self.view_notebook.select(1)
+            # Store image information for resize handling
+            self.after_canvas.original_image = self.current_output_image
             
-            except Exception as img_error:
-                # Specific handling for image loading errors
-                logger.error(f"Error loading output image: {str(img_error)}")
-                logger.error(f"Image error traceback: {traceback.format_exc()}")
-                
-                # Try a different display approach
-                try:
-                    import cv2
-                    import numpy as np
-                    
-                    # Try to use OpenCV for display
-                    logger.debug("Attempting alternative display approach with raw OpenCV")
-                    cv_img = cv2.imread(output_path)
-                    
-                    if cv_img is not None:
-                        # Create a simple window and display image
-                        cv_window_name = "Restored Image"
-                        cv2.namedWindow(cv_window_name, cv2.WINDOW_NORMAL)
-                        cv2.imshow(cv_window_name, cv_img)
-                        cv2.waitKey(1)  # Just to refresh
-                        logger.debug("Opened image in OpenCV window")
-                        
-                        # Create a photo-viewer-friendly copy with a different filename
-                        viewer_copy = os.path.join("output", "viewer_copy.jpg")
-                        cv2.imwrite(viewer_copy, cv_img)
-                        logger.debug(f"Created viewer-friendly copy: {viewer_copy}")
-                    else:
-                        logger.error("Failed to load image with OpenCV for direct display")
-                except Exception as e:
-                    logger.error(f"Error with alternative display approach: {str(e)}")
-                
-                # Try to open with system viewer instead
-                if Messagebox.yesno(
-                    "Image Display Error", 
-                    f"The image was processed successfully, but couldn't be displayed in the app.\n\n"
-                    f"Would you like to open it with your default image viewer?",
-                    parent=self.root
-                ) == "Yes":
-                    # Open the image with system default viewer
-                    try:
-                        # Try with the viewer copy first
-                        viewer_copy = os.path.join("output", "viewer_copy.jpg")
-                        if os.path.exists(viewer_copy):
-                            os.startfile(viewer_copy)
-                        else:
-                            os.startfile(output_path)
-                        self.status_var.set(f"Image opened in external viewer")
-                    except Exception as e:
-                        logger.error(f"Error opening image with system viewer: {str(e)}")
-                        self.status_var.set("Could not open image with external viewer")
+            # Display in After tab
+            self.display_image(self.after_canvas, output_image)
+            
+            # Create comparison view
+            self.create_comparison_view()
+            
+            # Switch to After tab
+            self.view_notebook.select(1)
         
         except Exception as e:
-            error_message = f"Failed to load result: {str(e)}"
-            logger.error(error_message)
+            logger.error(f"Failed to load result: {str(e)}")
             logger.error(f"Traceback: {traceback.format_exc()}")
-            
-            # Show more detailed error message
-            Messagebox.show_error(
-                "Error", 
-                f"Failed to load result from {output_path}:\n\n{str(e)}", 
-                parent=self.root
-            )
-    
+            Messagebox.show_error("Error", f"Failed to load result: {str(e)}", parent=self.root)
+            self.status_var.set("Error displaying result.")
+
     def handle_process_error(self, error_message):
         """Handle errors from the processing thread.
         
@@ -675,7 +605,7 @@ class PhotoRestorationApp:
         logger.error(f"Image processing error: {error_message}")
         
         self.progress.stop()
-        self.progress.configure(mode="determinate", value=0)
+        self.progress.configure(mode="determate", value=0)
         self.status_var.set("Processing failed.")
         
         # Create a more detailed error message with log file information
@@ -700,7 +630,6 @@ class PhotoRestorationApp:
     def create_comparison_view(self):
         """Create a side-by-side comparison of before and after images."""
         if self.current_input_image is None or self.current_output_image is None:
-            logger.warning("Cannot create comparison view - input or output image is missing")
             return
         
         try:
@@ -708,23 +637,8 @@ class PhotoRestorationApp:
             input_img = self.current_input_image.copy()
             output_img = self.current_output_image.copy()
             
-            logger.debug(f"Creating comparison: input={input_img.size}, output={output_img.size}")
-            
-            # Force load to catch errors early
-            input_img.load()
-            output_img.load()
-            
-            # Check for valid dimensions
-            if input_img.width <= 0 or input_img.height <= 0 or output_img.width <= 0 or output_img.height <= 0:
-                raise ValueError("Invalid image dimensions for comparison")
-            
             # Resize output to match input dimensions for fair comparison
-            try:
-                output_img = output_img.resize(input_img.size, Image.LANCZOS)
-            except Exception as resize_err:
-                logger.error(f"Error resizing image for comparison: {resize_err}")
-                # Try a simpler resize method if LANCZOS fails
-                output_img = output_img.resize(input_img.size, Image.NEAREST)
+            output_img = output_img.resize(input_img.size, Image.LANCZOS)
             
             # Create a combined image
             total_width = input_img.width * 2
@@ -732,20 +646,15 @@ class PhotoRestorationApp:
             comparison.paste(input_img, (0, 0))
             comparison.paste(output_img, (input_img.width, 0))
             
-            logger.debug(f"Comparison image created: {comparison.size}, {comparison.mode}")
+            # Store comparison image for resize handling
+            self.compare_canvas.original_image = comparison.copy()
             
             # Display in Compare tab
             self.display_image(self.compare_canvas, comparison)
-            
         except Exception as e:
             logger.error(f"Error creating comparison view: {str(e)}")
             logger.error(f"Traceback: {traceback.format_exc()}")
-            
-            # Show simple message in the compare tab instead of image
-            self.show_canvas_message(
-                self.compare_canvas, 
-                f"Could not create comparison view: {str(e)}"
-            )
+            self.show_canvas_message(self.compare_canvas, f"Error creating comparison: {str(e)}")
 
     def batch_process(self):
         """Process multiple images in a folder."""

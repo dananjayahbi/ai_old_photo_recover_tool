@@ -407,3 +407,421 @@ ValueError: height and width must be > 0
 2025-07-03 17:30:08,919 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
 2025-07-03 17:30:08,934 - ai_photo_restore - DEBUG - Creating comparison: input=(1024, 1024), output=(2048, 2048)
 2025-07-03 17:30:08,998 - ai_photo_restore - DEBUG - Comparison image created: (2048, 1024), RGB
+2025-07-03 17:43:26,796 - ai_photo_restore - INFO - Starting AI Old Photo Restoration Tool
+2025-07-03 17:43:32,618 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 17:43:32,618 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 17:43:32,618 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 17:43:32,618 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 17:43:32,618 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 17:43:32,618 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 17:43:32,618 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 17:44:03,861 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 17:44:03,861 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg']
+2025-07-03 17:44:03,861 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:44:03,882 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:44:03,902 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:44:03,902 - ai_photo_restore - INFO - Total processing time: 31.28 seconds
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Loading output image from: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Output file size: 731842 bytes
+2025-07-03 17:44:03,902 - ai_photo_restore - DEBUG - Attempting to load image with OpenCV: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:44:03,933 - ai_photo_restore - DEBUG - OpenCV loaded image with shape: (2048, 2048, 3), non-zero pixels: 12582626
+2025-07-03 17:44:04,004 - ai_photo_restore - DEBUG - Pixel stats - Min: 0, Max: 255, Mean: 92.40712308883667, StdDev: 47.013458795601956
+2025-07-03 17:44:04,016 - ai_photo_restore - DEBUG - Channel B - Min: 0, Max: 255, Mean: 88.23000383377075
+2025-07-03 17:44:04,024 - ai_photo_restore - DEBUG - Channel G - Min: 0, Max: 255, Mean: 92.18252372741699
+2025-07-03 17:44:04,035 - ai_photo_restore - DEBUG - Channel R - Min: 0, Max: 255, Mean: 96.80884170532227
+2025-07-03 17:44:04,283 - ai_photo_restore - DEBUG - Saved debug copy to: output\debug_copy.png
+2025-07-03 17:44:04,303 - ai_photo_restore - DEBUG - Converted OpenCV image to PIL Image
+2025-07-03 17:44:04,303 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:44:04,313 - ai_photo_restore - DEBUG - Creating comparison: input=(1024, 1024), output=(2048, 2048)
+2025-07-03 17:44:04,367 - ai_photo_restore - DEBUG - Comparison image created: (2048, 1024), RGB
+2025-07-03 17:44:49,775 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 17:44:49,775 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 17:44:49,775 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 17:44:49,787 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 17:44:49,787 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 17:44:49,787 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 17:44:49,787 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 17:45:19,380 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 17:45:19,380 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg']
+2025-07-03 17:45:19,380 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:45:19,402 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 17:45:19,725 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 17:45:19,725 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 17:45:19,725 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 17:45:19,730 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:45:19,730 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 17:45:19,730 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:45:19,730 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:45:19,730 - ai_photo_restore - INFO - Total processing time: 29.95 seconds
+2025-07-03 17:45:19,730 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 17:45:19,733 - ai_photo_restore - DEBUG - Loading output image from: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:45:19,733 - ai_photo_restore - DEBUG - Output file size: 731842 bytes
+2025-07-03 17:45:19,735 - ai_photo_restore - DEBUG - Attempting to load image with OpenCV: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:45:19,761 - ai_photo_restore - DEBUG - OpenCV loaded image with shape: (2048, 2048, 3), non-zero pixels: 12582626
+2025-07-03 17:45:19,843 - ai_photo_restore - DEBUG - Pixel stats - Min: 0, Max: 255, Mean: 92.40712308883667, StdDev: 47.013458795601956
+2025-07-03 17:45:19,853 - ai_photo_restore - DEBUG - Channel B - Min: 0, Max: 255, Mean: 88.23000383377075
+2025-07-03 17:45:19,863 - ai_photo_restore - DEBUG - Channel G - Min: 0, Max: 255, Mean: 92.18252372741699
+2025-07-03 17:45:19,874 - ai_photo_restore - DEBUG - Channel R - Min: 0, Max: 255, Mean: 96.80884170532227
+2025-07-03 17:45:20,042 - ai_photo_restore - DEBUG - Saved debug copy to: output\debug_copy.png
+2025-07-03 17:45:20,050 - ai_photo_restore - DEBUG - Converted OpenCV image to PIL Image
+2025-07-03 17:45:20,050 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:45:20,097 - ai_photo_restore - DEBUG - Creating comparison: input=(1024, 1024), output=(2048, 2048)
+2025-07-03 17:45:20,161 - ai_photo_restore - DEBUG - Comparison image created: (2048, 1024), RGB
+2025-07-03 17:52:30,674 - ai_photo_restore - INFO - Starting AI Old Photo Restoration Tool
+2025-07-03 17:52:39,004 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 17:52:39,004 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 17:52:39,004 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 17:52:39,004 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 17:52:39,004 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 17:52:39,004 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 17:52:39,004 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 17:53:08,804 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 17:53:08,804 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_copy.png', 'debug_resaved.jpg']
+2025-07-03 17:53:08,804 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:08,825 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_copy.png', 'debug_resaved.jpg']
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:53:08,835 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:08,835 - ai_photo_restore - INFO - Total processing time: 29.83 seconds
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Loading output image from: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Output file size: 731842 bytes
+2025-07-03 17:53:08,835 - ai_photo_restore - DEBUG - Attempting to load image with OpenCV: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:08,874 - ai_photo_restore - DEBUG - OpenCV loaded image with shape: (2048, 2048, 3), non-zero pixels: 12582626
+2025-07-03 17:53:08,952 - ai_photo_restore - DEBUG - Pixel stats - Min: 0, Max: 255, Mean: 92.40712308883667, StdDev: 47.013458795601956
+2025-07-03 17:53:08,962 - ai_photo_restore - DEBUG - Channel B - Min: 0, Max: 255, Mean: 88.23000383377075
+2025-07-03 17:53:08,972 - ai_photo_restore - DEBUG - Channel G - Min: 0, Max: 255, Mean: 92.18252372741699
+2025-07-03 17:53:08,984 - ai_photo_restore - DEBUG - Channel R - Min: 0, Max: 255, Mean: 96.80884170532227
+2025-07-03 17:53:09,436 - ai_photo_restore - DEBUG - Saved debug copy to: output\debug_copy.png
+2025-07-03 17:53:09,451 - ai_photo_restore - DEBUG - Converted OpenCV image to PIL Image
+2025-07-03 17:53:09,451 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:53:09,463 - ai_photo_restore - DEBUG - Creating comparison: input=(1024, 1024), output=(2048, 2048)
+2025-07-03 17:53:09,518 - ai_photo_restore - DEBUG - Comparison image created: (2048, 1024), RGB
+2025-07-03 17:53:25,478 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 17:53:25,478 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 17:53:25,478 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 17:53:25,478 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 17:53:25,478 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 17:53:25,478 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 17:53:25,478 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 17:53:54,981 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 17:53:54,981 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_copy.png', 'debug_resaved.jpg']
+2025-07-03 17:53:54,981 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:55,001 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 17:53:55,012 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 17:53:55,012 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_copy.png', 'debug_resaved.jpg']
+2025-07-03 17:53:55,012 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 17:53:55,012 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:55,012 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 17:53:55,022 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:53:55,022 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:55,022 - ai_photo_restore - INFO - Total processing time: 29.54 seconds
+2025-07-03 17:53:55,022 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 17:53:55,022 - ai_photo_restore - DEBUG - Loading output image from: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:55,022 - ai_photo_restore - DEBUG - Output file size: 731842 bytes
+2025-07-03 17:53:55,022 - ai_photo_restore - DEBUG - Attempting to load image with OpenCV: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 17:53:55,053 - ai_photo_restore - DEBUG - OpenCV loaded image with shape: (2048, 2048, 3), non-zero pixels: 12582626
+2025-07-03 17:53:55,125 - ai_photo_restore - DEBUG - Pixel stats - Min: 0, Max: 255, Mean: 92.40712308883667, StdDev: 47.013458795601956
+2025-07-03 17:53:55,135 - ai_photo_restore - DEBUG - Channel B - Min: 0, Max: 255, Mean: 88.23000383377075
+2025-07-03 17:53:55,146 - ai_photo_restore - DEBUG - Channel G - Min: 0, Max: 255, Mean: 92.18252372741699
+2025-07-03 17:53:55,156 - ai_photo_restore - DEBUG - Channel R - Min: 0, Max: 255, Mean: 96.80884170532227
+2025-07-03 17:53:55,419 - ai_photo_restore - DEBUG - Saved debug copy to: output\debug_copy.png
+2025-07-03 17:53:55,422 - ai_photo_restore - DEBUG - Converted OpenCV image to PIL Image
+2025-07-03 17:53:55,422 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 17:53:55,489 - ai_photo_restore - DEBUG - Creating comparison: input=(1024, 1024), output=(2048, 2048)
+2025-07-03 17:53:55,550 - ai_photo_restore - DEBUG - Comparison image created: (2048, 1024), RGB
+2025-07-03 18:01:01,931 - ai_photo_restore - INFO - Starting AI Old Photo Restoration Tool
+2025-07-03 18:01:08,295 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:01:08,295 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 18:01:08,295 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:01:08,301 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:01:08,301 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:01:08,301 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:01:08,301 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:01:48,014 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 18:01:48,016 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg']
+2025-07-03 18:01:48,016 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:01:48,044 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 18:01:48,062 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:01:48,064 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 18:01:48,064 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 18:01:48,064 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:01:48,064 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 18:01:48,064 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 18:01:48,064 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:01:48,066 - ai_photo_restore - INFO - Total processing time: 39.77 seconds
+2025-07-03 18:01:48,066 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:01:52,277 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:01:52,277 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 18:01:52,277 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:01:52,277 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:01:52,277 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:01:52,277 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:01:52,277 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:02:33,191 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 18:02:33,191 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 18:02:33,191 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:02:33,211 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 18:02:33,222 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:02:33,222 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 18:02:33,222 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 18:02:33,222 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:02:33,232 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 18:02:33,232 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 18:02:33,232 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:02:33,232 - ai_photo_restore - INFO - Total processing time: 40.95 seconds
+2025-07-03 18:02:33,232 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:02:52,446 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:02:52,446 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Downloads/Compressed/896424d5-ce29-42df-8fed-5f01a765390f.jpg
+2025-07-03 18:02:52,446 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:02:52,446 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:02:52,446 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:02:52,446 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:02:52,446 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Downloads\Compressed\896424d5-ce29-42df-8fed-5f01a765390f.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:03:26,863 - ai_photo_restore - DEBUG - Command stdout: Testing 0 896424d5-ce29-42df-8fed-5f01a765390f
+
+2025-07-03 18:03:26,863 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 18:03:26,863 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:03:26,895 - ai_photo_restore - DEBUG - Output image valid: 2048x2048, 3 channels, range: 0-255
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg']
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.png
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg (Size: 731842 bytes)
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Image successfully opened: (2048, 2048), RGB
+2025-07-03 18:03:26,911 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\896424d5-ce29-42df-8fed-5f01a765390f_out.jpg
+2025-07-03 18:03:26,911 - ai_photo_restore - INFO - Total processing time: 34.46 seconds
+2025-07-03 18:03:26,911 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:04:45,363 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:04:45,363 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/preview500.jpg
+2025-07-03 18:04:45,363 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:04:45,363 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:04:45,363 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:04:45,363 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:04:45,363 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\preview500.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:04:54,849 - ai_photo_restore - DEBUG - Command stdout: Testing 0 preview500
+
+2025-07-03 18:04:54,849 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'preview500_out.jpg']
+2025-07-03 18:04:54,849 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\preview500_out.jpg
+2025-07-03 18:04:54,859 - ai_photo_restore - DEBUG - Output image valid: 1000x1000, 3 channels, range: 0-255
+2025-07-03 18:04:54,869 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:04:54,869 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'preview500_out.jpg']
+2025-07-03 18:04:54,869 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\preview500_out.png
+2025-07-03 18:04:54,869 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\preview500_out.jpg
+2025-07-03 18:04:54,869 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\preview500_out.jpg (Size: 225274 bytes)
+2025-07-03 18:04:54,879 - ai_photo_restore - DEBUG - Image successfully opened: (1000, 1000), RGB
+2025-07-03 18:04:54,879 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\preview500_out.jpg
+2025-07-03 18:04:54,879 - ai_photo_restore - INFO - Total processing time: 9.52 seconds
+2025-07-03 18:04:54,879 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:07:25,568 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:07:25,568 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/ezgif-5ae8673dc50d86.jpg
+2025-07-03 18:07:25,570 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:07:25,570 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:07:25,570 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:07:25,570 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:07:25,570 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\ezgif-5ae8673dc50d86.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:12:25,577 - ai_photo_restore - ERROR - Real-ESRGAN process timed out after 5 minutes
+2025-07-03 18:12:25,577 - ai_photo_restore - ERROR - Error during image restoration: Real-ESRGAN process timed out after 5 minutes
+2025-07-03 18:12:27,219 - ai_photo_restore - ERROR - Traceback: Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 120, in restore_image
+    stdout, stderr = process.communicate(timeout=300)  # 5-minute timeout
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tuf\anaconda3\envs\depression\Lib\subprocess.py", line 1211, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tuf\anaconda3\envs\depression\Lib\subprocess.py", line 1632, in _communicate
+    raise TimeoutExpired(self.args, orig_timeout)
+subprocess.TimeoutExpired: Command '['python', 'inference_realesrgan.py', '-n', 'RealESRGAN_x4plus', '-i', 'C:\\Users\\Tuf\\Desktop\\ezgif-5ae8673dc50d86.jpg', '--outscale', '2.0', '-o', 'E:\\My_GitHub_Repos\\ai_old_photo_recover_tool\\output', '--fp32', '--ext', 'jpg']' timed out after 300 seconds
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 172, in restore_image
+    raise Exception(error_msg)
+Exception: Real-ESRGAN process timed out after 5 minutes
+
+2025-07-03 18:12:27,219 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:12:27,219 - ai_photo_restore - ERROR - Error during single image processing: Real-ESRGAN process timed out after 5 minutes
+2025-07-03 18:12:27,239 - ai_photo_restore - ERROR - Traceback: Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 120, in restore_image
+    stdout, stderr = process.communicate(timeout=300)  # 5-minute timeout
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tuf\anaconda3\envs\depression\Lib\subprocess.py", line 1211, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tuf\anaconda3\envs\depression\Lib\subprocess.py", line 1632, in _communicate
+    raise TimeoutExpired(self.args, orig_timeout)
+subprocess.TimeoutExpired: Command '['python', 'inference_realesrgan.py', '-n', 'RealESRGAN_x4plus', '-i', 'C:\\Users\\Tuf\\Desktop\\ezgif-5ae8673dc50d86.jpg', '--outscale', '2.0', '-o', 'E:\\My_GitHub_Repos\\ai_old_photo_recover_tool\\output', '--fp32', '--ext', 'jpg']' timed out after 300 seconds
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\main.py", line 543, in process_thread
+    output_path = self.restorer.restore_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 172, in restore_image
+    raise Exception(error_msg)
+Exception: Real-ESRGAN process timed out after 5 minutes
+
+2025-07-03 18:12:27,239 - ai_photo_restore - ERROR - Image processing error: Real-ESRGAN process timed out after 5 minutes
+2025-07-03 18:15:02,956 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:15:02,956 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/ezgif-5ae8673dc50d86.jpg
+2025-07-03 18:15:02,956 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:15:02,956 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:15:02,956 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:15:02,956 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:15:02,956 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\ezgif-5ae8673dc50d86.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:15:06,352 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:15:06,352 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/ezgif-5ae8673dc50d86.jpg
+2025-07-03 18:15:06,352 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:15:06,352 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\Real-ESRGAN\output
+2025-07-03 18:15:06,352 - ai_photo_restore - ERROR - Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:06,352 - ai_photo_restore - ERROR - Error during single image processing: Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:06,352 - ai_photo_restore - ERROR - Traceback: Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\main.py", line 543, in process_thread
+    output_path = self.restorer.restore_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 74, in restore_image
+    raise FileNotFoundError(error_msg)
+FileNotFoundError: Real-ESRGAN directory not found. Please run setup first.
+
+2025-07-03 18:15:06,352 - ai_photo_restore - ERROR - Image processing error: Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:16,625 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:15:16,625 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/images.jpg
+2025-07-03 18:15:16,625 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:15:16,625 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\Real-ESRGAN\output
+2025-07-03 18:15:16,625 - ai_photo_restore - ERROR - Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:16,625 - ai_photo_restore - ERROR - Error during single image processing: Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:16,625 - ai_photo_restore - ERROR - Traceback: Traceback (most recent call last):
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\main.py", line 543, in process_thread
+    output_path = self.restorer.restore_image(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\My_GitHub_Repos\ai_old_photo_recover_tool\restoration.py", line 74, in restore_image
+    raise FileNotFoundError(error_msg)
+FileNotFoundError: Real-ESRGAN directory not found. Please run setup first.
+
+2025-07-03 18:15:16,625 - ai_photo_restore - ERROR - Image processing error: Real-ESRGAN directory not found. Please run setup first.
+2025-07-03 18:15:29,885 - ai_photo_restore - INFO - Starting AI Old Photo Restoration Tool
+2025-07-03 18:15:35,484 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=True
+2025-07-03 18:15:35,484 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/images.jpg
+2025-07-03 18:15:35,484 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:15:35,484 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:15:35,486 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:15:35,486 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:15:35,486 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\images.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:15:46,979 - ai_photo_restore - DEBUG - Command stdout: Testing 0 images
+
+2025-07-03 18:15:46,979 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:15:46,979 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:15:46,983 - ai_photo_restore - DEBUG - Output image valid: 536x376, 3 channels, range: 0-255
+2025-07-03 18:15:46,997 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:15:47,003 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:15:47,003 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.png
+2025-07-03 18:15:47,003 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:15:47,003 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg (Size: 80725 bytes)
+2025-07-03 18:15:47,007 - ai_photo_restore - DEBUG - Image successfully opened: (536, 376), RGB
+2025-07-03 18:15:47,007 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:15:47,007 - ai_photo_restore - INFO - Total processing time: 11.52 seconds
+2025-07-03 18:15:47,007 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:15:50,198 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=True
+2025-07-03 18:15:50,198 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/images.jpg
+2025-07-03 18:15:50,198 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:15:50,198 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:15:50,198 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:15:50,198 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:15:50,198 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\images.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:16:06,954 - ai_photo_restore - DEBUG - Command stdout: Testing 0 images
+
+2025-07-03 18:16:06,954 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:16:06,954 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Output image valid: 536x376, 3 channels, range: 0-255
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.png
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg (Size: 80725 bytes)
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Image successfully opened: (536, 376), RGB
+2025-07-03 18:16:06,960 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:06,960 - ai_photo_restore - INFO - Total processing time: 16.76 seconds
+2025-07-03 18:16:06,960 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:16:23,132 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:16:23,132 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/images.jpg
+2025-07-03 18:16:23,132 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:16:23,132 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:16:23,132 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:16:23,132 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:16:23,132 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\images.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Command stdout: Testing 0 images
+
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Output image valid: 536x376, 3 channels, range: 0-255
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.png
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg (Size: 80725 bytes)
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Image successfully opened: (536, 376), RGB
+2025-07-03 18:16:35,991 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\images_out.jpg
+2025-07-03 18:16:35,991 - ai_photo_restore - INFO - Total processing time: 12.86 seconds
+2025-07-03 18:16:35,991 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:17:49,250 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=False
+2025-07-03 18:17:49,250 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/ezgif-6662f7f0dad30a.jpg
+2025-07-03 18:17:49,250 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:17:49,250 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:17:49,250 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:17:49,250 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:17:49,250 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\ezgif-6662f7f0dad30a.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:18:33,067 - ai_photo_restore - DEBUG - Command stdout: Testing 0 ezgif-6662f7f0dad30a
+
+2025-07-03 18:18:33,083 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'ezgif-6662f7f0dad30a_out.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:18:33,088 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:18:33,098 - ai_photo_restore - DEBUG - Output image valid: 800x954, 3 channels, range: 19-255
+2025-07-03 18:18:33,118 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:18:33,118 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'ezgif-6662f7f0dad30a_out.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:18:33,118 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.png
+2025-07-03 18:18:33,118 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:18:33,118 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg (Size: 86956 bytes)
+2025-07-03 18:18:33,125 - ai_photo_restore - DEBUG - Image successfully opened: (800, 954), RGB
+2025-07-03 18:18:33,125 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:18:33,128 - ai_photo_restore - INFO - Total processing time: 43.88 seconds
+2025-07-03 18:18:33,128 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:18:44,324 - ai_photo_restore - DEBUG - Processing with parameters: model=RealESRGAN_x4plus, scale=2.0, face_enhance=True
+2025-07-03 18:18:44,324 - ai_photo_restore - INFO - Starting image restoration for: C:/Users/Tuf/Desktop/ezgif-6662f7f0dad30a.jpg
+2025-07-03 18:18:44,324 - ai_photo_restore - INFO - Settings: model=RealESRGAN_x4plus, outscale=2.0, face_enhance=False
+2025-07-03 18:18:44,326 - ai_photo_restore - DEBUG - Output directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output
+2025-07-03 18:18:44,326 - ai_photo_restore - DEBUG - Changing to Real-ESRGAN directory
+2025-07-03 18:18:44,326 - ai_photo_restore - DEBUG - Running in 'depression' conda environment: True
+2025-07-03 18:18:44,326 - ai_photo_restore - DEBUG - Executing command: python inference_realesrgan.py -n RealESRGAN_x4plus -i C:\Users\Tuf\Desktop\ezgif-6662f7f0dad30a.jpg --outscale 2.0 -o E:\My_GitHub_Repos\ai_old_photo_recover_tool\output --fp32 --ext jpg
+2025-07-03 18:19:24,229 - ai_photo_restore - DEBUG - Command stdout: Testing 0 ezgif-6662f7f0dad30a
+
+2025-07-03 18:19:24,229 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'ezgif-6662f7f0dad30a_out.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:19:24,229 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:19:24,244 - ai_photo_restore - DEBUG - Output image valid: 800x954, 3 channels, range: 19-255
+2025-07-03 18:19:24,264 - ai_photo_restore - DEBUG - Re-saved image to: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\debug_resaved.jpg
+2025-07-03 18:19:24,264 - ai_photo_restore - DEBUG - Files in output directory after processing: ['896424d5-ce29-42df-8fed-5f01a765390f_out.jpg', 'debug_resaved.jpg', 'ezgif-6662f7f0dad30a_out.jpg', 'images_out.jpg', 'preview500_out.jpg']
+2025-07-03 18:19:24,264 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.png
+2025-07-03 18:19:24,264 - ai_photo_restore - DEBUG - Checking for output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:19:24,264 - ai_photo_restore - DEBUG - Found output file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg (Size: 86956 bytes)
+2025-07-03 18:19:24,267 - ai_photo_restore - DEBUG - Image successfully opened: (800, 954), RGB
+2025-07-03 18:19:24,267 - ai_photo_restore - INFO - Image restoration complete. Output: E:\My_GitHub_Repos\ai_old_photo_recover_tool\output\ezgif-6662f7f0dad30a_out.jpg
+2025-07-03 18:19:24,269 - ai_photo_restore - INFO - Total processing time: 39.95 seconds
+2025-07-03 18:19:24,269 - ai_photo_restore - DEBUG - Changing back to original directory: E:\My_GitHub_Repos\ai_old_photo_recover_tool
+2025-07-03 18:19:45,920 - ai_photo_restore - INFO - Opening log file: E:\My_GitHub_Repos\ai_old_photo_recover_tool\logs\ai_photo_restore_2025-07-03.log

@@ -17,6 +17,7 @@ Real-ESRGAN/
 # Input and output folders
 input/
 output/
+logs/
 
 # Environment
 .env
