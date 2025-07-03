@@ -56,6 +56,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 from restoration import RestoreImage
+from colorization import ColorizeImage
 
 
 class PhotoRestorationApp:
@@ -81,6 +82,10 @@ class PhotoRestorationApp:
         self.current_input_image = None
         self.current_output_image = None
         self.restorer = RestoreImage()
+        self.colorizer = ColorizeImage()
+        
+        # Processing mode: 'restore' or 'colorize'
+        self.processing_mode = 'restore'
         
         # Build the interface
         self.create_menu()
@@ -206,12 +211,50 @@ class PhotoRestorationApp:
             command=self.open_folder
         ).pack(fill=X)
         
-        # Settings section
-        settings_section = ttk.LabelFrame(control_frame, text="Restoration Settings", padding=10)
-        settings_section.pack(fill=X, pady=(0, 10))
+        # Processing mode selection
+        mode_section = ttk.LabelFrame(control_frame, text="Processing Mode", padding=10)
+        mode_section.pack(fill=X, pady=(0, 10))
+        
+        self.mode_var = ttk.StringVar(value="restore")
+        
+        def on_mode_change():
+            selected_mode = self.mode_var.get()
+            self.processing_mode = selected_mode
+            
+            # Show/hide appropriate settings based on mode
+            if selected_mode == "restore":
+                restoration_settings_frame.pack(fill=X, pady=(0, 10))
+                colorization_settings_frame.pack_forget()
+            else:  # colorize
+                restoration_settings_frame.pack_forget()
+                colorization_settings_frame.pack(fill=X, pady=(0, 10))
+        
+        # Restoration mode option
+        ttk.Radiobutton(
+            mode_section,
+            text="Restore Image (Super Resolution)",
+            variable=self.mode_var,
+            value="restore",
+            bootstyle="primary-toolbutton",
+            command=on_mode_change
+        ).pack(fill=X, pady=(0, 5))
+        
+        # Colorization mode option
+        ttk.Radiobutton(
+            mode_section,
+            text="Colorize Black & White Image",
+            variable=self.mode_var,
+            value="colorize",
+            bootstyle="success-toolbutton",
+            command=on_mode_change
+        ).pack(fill=X)
+        
+        # Restoration Settings
+        restoration_settings_frame = ttk.LabelFrame(control_frame, text="Restoration Settings", padding=10)
+        restoration_settings_frame.pack(fill=X, pady=(0, 10))
         
         # Scale factor setting
-        scale_frame = ttk.Frame(settings_section)
+        scale_frame = ttk.Frame(restoration_settings_frame)
         scale_frame.pack(fill=X, pady=(0, 10))
         ttk.Label(scale_frame, text="Scale Factor:").pack(side=LEFT)
         
@@ -229,7 +272,7 @@ class PhotoRestorationApp:
         # Face enhancement option
         self.face_enhance_var = ttk.BooleanVar(value=True)
         face_enhance_cb = ttk.Checkbutton(
-            settings_section, 
+            restoration_settings_frame, 
             text="Enhance Faces", 
             variable=self.face_enhance_var,
             bootstyle="round-toggle"
@@ -237,7 +280,7 @@ class PhotoRestorationApp:
         face_enhance_cb.pack(fill=X, pady=(0, 10))
         
         # Model selection
-        model_frame = ttk.Frame(settings_section)
+        model_frame = ttk.Frame(restoration_settings_frame)
         model_frame.pack(fill=X)
         ttk.Label(model_frame, text="Model:").pack(side=LEFT)
         
@@ -251,23 +294,54 @@ class PhotoRestorationApp:
         )
         model_cb.pack(side=RIGHT)
         
+        # Colorization Settings
+        colorization_settings_frame = ttk.LabelFrame(control_frame, text="Colorization Settings", padding=10)
+        # Don't pack this initially - only show when colorize mode is selected
+        
+        # Artistic mode option
+        self.artistic_var = ttk.BooleanVar(value=True)
+        artistic_cb = ttk.Checkbutton(
+            colorization_settings_frame, 
+            text="Artistic Mode", 
+            variable=self.artistic_var,
+            bootstyle="round-toggle"
+        )
+        artistic_cb.pack(fill=X, pady=(0, 10))
+        
+        # Render factor setting
+        render_frame = ttk.Frame(colorization_settings_frame)
+        render_frame.pack(fill=X)
+        ttk.Label(render_frame, text="Render Quality:").pack(side=LEFT)
+        
+        self.render_var = ttk.IntVar(value=35)
+        render_cb = ttk.Combobox(
+            render_frame, 
+            values=[10, 15, 20, 25, 30, 35, 40, 45], 
+            textvariable=self.render_var,
+            state="readonly",
+            width=5
+        )
+        render_cb.pack(side=RIGHT)
+        
         # Process section
         process_section = ttk.LabelFrame(control_frame, text="Process", padding=10)
         process_section.pack(fill=X, pady=(0, 10))
         
-        ttk.Button(
+        self.process_button = ttk.Button(
             process_section, 
-            text="Restore Image", 
+            text="Process Image", 
             bootstyle="success", 
             command=self.process_image
-        ).pack(fill=X, pady=(0, 5))
+        )
+        self.process_button.pack(fill=X, pady=(0, 5))
         
-        ttk.Button(
+        self.batch_button = ttk.Button(
             process_section, 
             text="Batch Process", 
             bootstyle="info", 
             command=self.batch_process
-        ).pack(fill=X)
+        )
+        self.batch_button.pack(fill=X)
         
         # Status section
         status_section = ttk.LabelFrame(control_frame, text="Status", padding=10)
@@ -510,19 +584,20 @@ class PhotoRestorationApp:
             self.show_canvas_message(canvas, f"Error displaying image: {str(e)}")
 
     def process_image(self):
-        """Process the current image using Real-ESRGAN."""
+        """Process the current image based on selected mode (restore or colorize)."""
         if self.input_path is None or self.current_input_image is None:
             Messagebox.show_warning("No Image", "Please open an image first.", parent=self.root)
             return
         
-        self.status_var.set("Processing image...")
+        # Update UI based on selected mode
+        mode = self.processing_mode
+        if mode == "restore":
+            self.status_var.set("Restoring image...")
+        else:
+            self.status_var.set("Colorizing image...")
+            
         self.progress.configure(mode="indeterminate")
         self.progress.start(10)
-        
-        # Get parameters
-        scale = self.scale_var.get()
-        face_enhance = self.face_enhance_var.get()
-        model_name = self.model_var.get()
         
         # Create a thread to run the process
         def process_thread():
@@ -536,16 +611,35 @@ class PhotoRestorationApp:
                     self.current_input_image.save(temp_input)
                     input_path = temp_input
                 
-                # Process the image with some debugging settings
-                logger.debug(f"Processing with parameters: model={model_name}, scale={scale}, face_enhance={face_enhance}")
-                
-                # If this is the first run after fixing issues, try with standard parameters
-                output_path = self.restorer.restore_image(
-                    input_path,
-                    model_name=model_name,  # Try the default model
-                    outscale=2.0,           # Use standard scale
-                    face_enhance=False      # Disable face enhancement for simplicity
-                )
+                # Process based on selected mode
+                if mode == "restore":
+                    # Get restoration parameters
+                    scale = self.scale_var.get()
+                    face_enhance = self.face_enhance_var.get()
+                    model_name = self.model_var.get()
+                    
+                    logger.debug(f"Restoring with parameters: model={model_name}, scale={scale}, face_enhance={face_enhance}")
+                    
+                    # Process with Real-ESRGAN
+                    output_path = self.restorer.restore_image(
+                        input_path,
+                        model_name=model_name,
+                        outscale=scale,
+                        face_enhance=face_enhance
+                    )
+                else:
+                    # Get colorization parameters
+                    artistic = self.artistic_var.get()
+                    render_factor = self.render_var.get()
+                    
+                    logger.debug(f"Colorizing with parameters: artistic={artistic}, render_factor={render_factor}")
+                    
+                    # Process with DeOldify
+                    output_path = self.colorizer.colorize_image(
+                        input_path,
+                        artistic=artistic,
+                        render_factor=render_factor
+                    )
                 
                 # Update UI in the main thread
                 self.root.after(0, lambda: self.display_result(output_path))
@@ -605,7 +699,7 @@ class PhotoRestorationApp:
         logger.error(f"Image processing error: {error_message}")
         
         self.progress.stop()
-        self.progress.configure(mode="determate", value=0)
+        self.progress.configure(mode="determinate", value=0)
         self.status_var.set("Processing failed.")
         
         # Create a more detailed error message with log file information

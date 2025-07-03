@@ -388,6 +388,108 @@ def main():
             
             os.chdir("..")
             
+            # Setup DeOldify for colorization
+            if not os.path.exists("DeOldify"):
+                update_status("Cloning DeOldify repository...")
+                log_message("\nCloning DeOldify repository...")
+                try:
+                    # Use subprocess.run with timeout instead of check_call
+                    subprocess.run(
+                        ["git", "clone", "https://github.com/jantic/DeOldify.git"],
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.PIPE,
+                        timeout=300,  # 5-minute timeout for cloning
+                        check=True
+                    )
+                    update_progress(value=92)
+                    log_message("✅ DeOldify repository cloned successfully.")
+                    # Sleep briefly to allow UI updates
+                    time.sleep(0.5)
+                except subprocess.TimeoutExpired:
+                    log_message("❌ Error: Timed out while cloning DeOldify repository.")
+                    log_message("Please check your internet connection and try again.")
+                    update_status("Setup incomplete - DeOldify not set up")
+                    show_message("warning", "Setup Warning", 
+                               "Timed out while cloning DeOldify repository. Colorization feature will not be available.")
+                except subprocess.CalledProcessError as e:
+                    log_message(f"❌ Error: Failed to clone DeOldify repository: {e}")
+                    update_status("Setup incomplete - DeOldify not set up")
+                    show_message("warning", "Setup Warning", 
+                               "Failed to clone DeOldify repository. Colorization feature will not be available.")
+            else:
+                log_message("DeOldify repository already exists. Skipping clone.")
+                update_progress(value=92)
+            
+            # Install DeOldify requirements if directory exists
+            if os.path.exists("DeOldify"):
+                os.chdir("DeOldify")
+                try:
+                    # Install DeOldify requirements
+                    log_message("Installing DeOldify requirements...")
+                    try:
+                        subprocess.run(
+                            ["conda", "run", "-n", "depression", "pip", "install", "-r", "requirements.txt"],
+                            stdout=subprocess.PIPE, 
+                            stderr=subprocess.PIPE,
+                            timeout=600,  # 10-minute timeout for installing requirements
+                            check=True
+                        )
+                        update_progress(value=95)
+                        log_message("✅ DeOldify requirements installed successfully.")
+                    except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:
+                        log_message(f"⚠️ Warning: Issue installing DeOldify requirements: {e}")
+                        log_message("Colorization feature may not work properly.")
+                    
+                    # Download pre-trained models if needed
+                    models_dir = "models"
+                    if not os.path.exists(models_dir):
+                        os.makedirs(models_dir)
+                        log_message("Created models directory.")
+                    
+                    # URLs for DeOldify pre-trained models
+                    model_urls = {
+                        "ColorizeArtistic_gen.pth": "https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=1",
+                        "ColorizeStable_gen.pth": "https://www.dropbox.com/s/mwjep3vyqk5mkld/ColorizeStable_gen.pth?dl=1"
+                    }
+                    
+                    for model_name, model_url in model_urls.items():
+                        model_path = os.path.join(models_dir, model_name)
+                        if not os.path.exists(model_path):
+                            try:
+                                log_message(f"Downloading {model_name}...")
+                                # Create a models directory in the root folder too (used by DeOldify)
+                                root_models_dir = os.path.join("..", "models")
+                                os.makedirs(root_models_dir, exist_ok=True)
+                                
+                                # Use curl to download the model
+                                subprocess.run(
+                                    ["curl", "-L", model_url, "-o", model_path],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    timeout=600,  # 10-minute timeout for downloading large files
+                                    check=True
+                                )
+                                
+                                # Copy the model to the root models directory as well
+                                root_model_path = os.path.join(root_models_dir, model_name)
+                                import shutil
+                                shutil.copy2(model_path, root_model_path)
+                                
+                                log_message(f"✅ {model_name} downloaded successfully.")
+                            except Exception as e:
+                                log_message(f"⚠️ Warning: Failed to download {model_name}: {e}")
+                                log_message("You may need to download this model manually.")
+                        else:
+                            log_message(f"{model_name} already exists. Skipping download.")
+                    
+                    log_message("✅ DeOldify setup complete.")
+                    update_progress(value=97)
+                except Exception as e:
+                    log_message(f"⚠️ Warning: Error during DeOldify setup: {e}")
+                    log_message("Colorization feature may not work properly.")
+                
+                os.chdir("..")
+            
             # Create necessary directories
             for directory in ["input", "output"]:
                 if not os.path.exists(directory):

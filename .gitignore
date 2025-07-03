@@ -18,6 +18,8 @@ Real-ESRGAN/
 input/
 output/
 logs/
+models/
+result_images/
 
 # Environment
 .env
