@@ -1,0 +1,9 @@
+basicsr
+facexlib
+gfpgan
+torch
+torchvision
+numpy
+opencv-python
+pillow
+ttkbootstrap
