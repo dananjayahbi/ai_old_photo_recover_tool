@@ -3,11 +3,13 @@
 
 """
 Module for handling image restoration using Real-ESRGAN.
+This module uses the 'depression' conda environment.
 """
 
 import os
 import subprocess
 import uuid
+import shutil
 from pathlib import Path
 
 
@@ -49,14 +51,28 @@ class RestoreImage:
         os.chdir("Real-ESRGAN")
         
         try:
-            # Build command
-            cmd = [
-                "python", "inference_realesrgan.py",
-                "-n", model_name,
-                "-i", input_path,
-                "--outscale", str(outscale),
-                "-o", output_dir
-            ]
+            # Check if we're already in the depression environment
+            in_conda_env = 'CONDA_DEFAULT_ENV' in os.environ and os.environ['CONDA_DEFAULT_ENV'] == 'depression'
+            
+            if in_conda_env:
+                # Build command for direct execution
+                cmd = [
+                    "python", "inference_realesrgan.py",
+                    "-n", model_name,
+                    "-i", input_path,
+                    "--outscale", str(outscale),
+                    "-o", output_dir
+                ]
+            else:
+                # Build command to run through conda
+                cmd = [
+                    "conda", "run", "-n", "depression",
+                    "python", "inference_realesrgan.py",
+                    "-n", model_name,
+                    "-i", input_path,
+                    "--outscale", str(outscale),
+                    "-o", output_dir
+                ]
             
             # Add face enhancement if requested
             if face_enhance:

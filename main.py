@@ -3,15 +3,38 @@
 
 """
 Main entry point for the AI Old Photo Restoration Tool.
+This application uses the 'depression' conda environment.
 """
 
 import os
 import sys
 import threading
 import time
+import shutil
+import subprocess
 from pathlib import Path
 from tkinter import filedialog
 
+# Check if running within the depression conda environment
+def is_in_conda_env():
+    """Check if we're running inside the conda environment."""
+    return 'CONDA_DEFAULT_ENV' in os.environ and os.environ['CONDA_DEFAULT_ENV'] == 'depression'
+
+# If not in the correct environment, try to restart in it
+if not is_in_conda_env():
+    if shutil.which('conda'):
+        print("Restarting in 'depression' conda environment...")
+        try:
+            subprocess.call(['conda', 'run', '-n', 'depression', 'python'] + sys.argv)
+            sys.exit(0)
+        except Exception as e:
+            print(f"Failed to restart in conda environment: {e}")
+            sys.exit(1)
+    else:
+        print("Conda not found. Please run with: conda run -n depression python main.py")
+        sys.exit(1)
+
+# Now we're sure we're in the right environment, import everything else
 import cv2
 import numpy as np
 import ttkbootstrap as ttk
