@@ -87,6 +87,14 @@ class PhotoRestorationApp:
         # Processing mode: 'restore' or 'colorize'
         self.processing_mode = 'restore'
         
+        # Zoom and pan variables for comparison view
+        self.zoom_level = 1.0
+        self.pan_x = 0
+        self.pan_y = 0
+        self.is_panning = False
+        self.last_x = 0
+        self.last_y = 0
+        
         # Build the interface
         self.create_menu()
         self.create_main_frame()
@@ -160,28 +168,35 @@ class PhotoRestorationApp:
 
     def create_menu(self):
         """Create the application menu."""
-        menubar = ttk.Menu(self.root)
-        self.root.config(menu=menubar)
+        menu = ttk.Menu(self.root)
+        self.root.config(menu=menu)
         
         # File menu
-        file_menu = ttk.Menu(menubar, tearoff=False)
-        menubar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Open Image...", command=self.open_image)
-        file_menu.add_command(label="Open Folder...", command=self.open_folder)
-        file_menu.add_separator()
-        file_menu.add_command(label="Save Restored Image...", command=self.save_image)
+        file_menu = ttk.Menu(menu, tearoff=0)
+        menu.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Open Image", command=self.open_image)
+        file_menu.add_command(label="Open Folder", command=self.open_folder)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.root.quit)
         
-        # Tools menu
-        tools_menu = ttk.Menu(menubar, tearoff=False)
-        menubar.add_cascade(label="Tools", menu=tools_menu)
-        tools_menu.add_command(label="View Logs", command=lambda: self.open_log_file(get_log_file_path()))
+        # View menu
+        view_menu = ttk.Menu(menu, tearoff=0)
+        menu.add_cascade(label="View", menu=view_menu)
+        view_menu.add_command(label="Zoom In", command=self.zoom_in, accelerator="Ctrl++")
+        view_menu.add_command(label="Zoom Out", command=self.zoom_out, accelerator="Ctrl+-")
+        view_menu.add_command(label="Reset Zoom", command=self.reset_zoom, accelerator="Ctrl+0")
         
         # Help menu
-        help_menu = ttk.Menu(menubar, tearoff=False)
-        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu = ttk.Menu(menu, tearoff=0)
+        menu.add_cascade(label="Help", menu=help_menu)
         help_menu.add_command(label="About", command=self.show_about)
+        help_menu.add_command(label="View Logs", command=self.open_log_file)
+        
+        # Bind keyboard shortcuts
+        self.root.bind("<Control-plus>", lambda e: self.zoom_in())
+        self.root.bind("<Control-equal>", lambda e: self.zoom_in())  # Also bind to = key (same key as + without shift)
+        self.root.bind("<Control-minus>", lambda e: self.zoom_out())
+        self.root.bind("<Control-0>", lambda e: self.reset_zoom())
 
     def create_main_frame(self):
         """Create the main application frame and widgets."""
@@ -373,6 +388,44 @@ class PhotoRestorationApp:
         self.compare_frame = ttk.Frame(self.view_notebook)
         self.view_notebook.add(self.compare_frame, text="Compare")
         
+        # Controls frame for comparison view
+        self.compare_controls = ttk.Frame(self.compare_frame)
+        self.compare_controls.pack(side=TOP, fill=X, pady=(5, 0), padx=5)
+        
+        # Zoom controls
+        zoom_label = ttk.Label(self.compare_controls, text="Zoom:")
+        zoom_label.pack(side=LEFT, padx=(0, 5))
+        
+        self.zoom_out_btn = ttk.Button(
+            self.compare_controls, 
+            text="−", 
+            width=3, 
+            bootstyle="secondary-outline",
+            command=self.zoom_out
+        )
+        self.zoom_out_btn.pack(side=LEFT)
+        
+        self.zoom_level_var = ttk.StringVar(value="100%")
+        zoom_level_label = ttk.Label(self.compare_controls, textvariable=self.zoom_level_var, width=6)
+        zoom_level_label.pack(side=LEFT, padx=5)
+        
+        self.zoom_in_btn = ttk.Button(
+            self.compare_controls, 
+            text="+", 
+            width=3, 
+            bootstyle="secondary-outline",
+            command=self.zoom_in
+        )
+        self.zoom_in_btn.pack(side=LEFT)
+        
+        self.reset_zoom_btn = ttk.Button(
+            self.compare_controls, 
+            text="Reset View", 
+            bootstyle="secondary",
+            command=self.reset_zoom
+        )
+        self.reset_zoom_btn.pack(side=LEFT, padx=10)
+        
         # Create canvases for images
         self.before_canvas = ttk.Canvas(self.before_frame, background="#f0f0f0")
         self.before_canvas.pack(fill=BOTH, expand=YES)
@@ -385,15 +438,33 @@ class PhotoRestorationApp:
         self.after_canvas.bind("<Configure>", lambda e, canvas=self.after_canvas: self.on_canvas_resize(e, canvas))
         
         # Split view for comparison
-        self.compare_canvas = ttk.Canvas(self.compare_frame, background="#f0f0f0")
+        self.compare_canvas = ttk.Canvas(self.compare_frame, background="#f0f0f0", cursor="hand2")
         self.compare_canvas.pack(fill=BOTH, expand=YES)
         # Bind canvas resize event
         self.compare_canvas.bind("<Configure>", lambda e, canvas=self.compare_canvas: self.on_canvas_resize(e, canvas))
         
+        # Bind mouse wheel for zooming
+        self.compare_canvas.bind("<MouseWheel>", self.on_mouse_wheel)  # Windows
+        self.compare_canvas.bind("<Button-4>", self.on_mouse_wheel)  # Linux scroll up
+        self.compare_canvas.bind("<Button-5>", self.on_mouse_wheel)  # Linux scroll down
+        
+        # Bind mouse events for panning
+        self.compare_canvas.bind("<ButtonPress-1>", self.start_pan)
+        self.compare_canvas.bind("<B1-Motion>", self.pan_image)
+        self.compare_canvas.bind("<ButtonRelease-1>", self.stop_pan)
+        
         # Default message when no image is loaded
         self.show_canvas_message(self.before_canvas, "No image loaded. Use 'Open Image' to load a photo.")
         self.show_canvas_message(self.after_canvas, "Restored image will appear here after processing.")
-        self.show_canvas_message(self.compare_canvas, "Comparison view will be available after restoration.")
+        self.show_canvas_message(
+            self.compare_canvas, 
+            "Comparison view will be available after restoration.\n\n"
+            "Zoom Controls:\n"
+            "• Use the zoom buttons above\n"
+            "• Mouse wheel to zoom in/out\n"
+            "• Ctrl++ or Ctrl+- keyboard shortcuts\n"
+            "• Click and drag to pan when zoomed in"
+        )
 
     def on_canvas_resize(self, event, canvas):
         """Handle canvas resize events to keep images centered.
@@ -417,7 +488,12 @@ class PhotoRestorationApp:
         elif hasattr(canvas, 'original_image') and canvas.original_image:
             # We have the original image but it needs to be redisplayed
             # (this handles cases where window was resized but the image wasn't showing)
-            self.display_image(canvas, canvas.original_image)
+            if canvas == self.compare_canvas:
+                # Use zoomed display for comparison view
+                self.display_comparison_with_zoom()
+            else:
+                # Regular display for other canvases
+                self.display_image(canvas, canvas.original_image)
         else:
             # Just show the default message
             if canvas == self.before_canvas:
@@ -740,11 +816,17 @@ class PhotoRestorationApp:
             comparison.paste(input_img, (0, 0))
             comparison.paste(output_img, (input_img.width, 0))
             
+            # Reset zoom and pan when creating a new comparison
+            self.zoom_level = 1.0
+            self.pan_x = 0
+            self.pan_y = 0
+            self._update_zoom_level_display()
+            
             # Store comparison image for resize handling
             self.compare_canvas.original_image = comparison.copy()
             
-            # Display in Compare tab
-            self.display_image(self.compare_canvas, comparison)
+            # Display in Compare tab with zoom support
+            self.display_comparison_with_zoom()
         except Exception as e:
             logger.error(f"Error creating comparison view: {str(e)}")
             logger.error(f"Traceback: {traceback.format_exc()}")
@@ -949,48 +1031,176 @@ class PhotoRestorationApp:
             except Exception as e:
                 Messagebox.show_error("Save Error", f"Failed to save image: {str(e)}", parent=self.root)
 
-    def open_log_file(self, log_path):
+    def show_about(self):
+        """Show the about dialog."""
+        about_text = (
+            "AI Old Photo Restoration Tool\n\n"
+            "A tool to restore and colorize old photos using AI.\n\n"
+            "Features:\n"
+            "• Photo restoration using Real-ESRGAN\n"
+            "• Photo colorization using DeOldify\n"
+            "• Side-by-side comparison with zoom\n"
+            "• Batch processing\n\n"
+            "Keyboard Shortcuts:\n"
+            "Ctrl++ : Zoom in\n"
+            "Ctrl+- : Zoom out\n"
+            "Ctrl+0 : Reset zoom\n\n"
+            "Mouse Controls:\n"
+            "• Scroll wheel to zoom in/out\n"
+            "• Click and drag to pan when zoomed in"
+        )
+        Messagebox.show_info("About", about_text, parent=self.root)
+        
+    def open_log_file(self, log_file=None):
         """Open the log file in the default text editor.
         
         Args:
-            log_path: Path to the log file
+            log_file: Optional path to the log file. If None, uses the current log file.
         """
-        logger.info(f"Opening log file: {log_path}")
-        path = os.path.abspath(log_path)
-        
-        if os.path.exists(path):
+        if log_file is None:
+            log_file = get_log_file_path()
+            
+        if os.path.exists(log_file):
             try:
-                if sys.platform == 'win32':
-                    os.startfile(path)
-                elif sys.platform == 'darwin':  # macOS
-                    subprocess.call(['open', path])
-                else:  # Linux
-                    subprocess.call(['xdg-open', path])
+                import subprocess
+                os.startfile(log_file) if os.name == 'nt' else subprocess.call(['xdg-open', log_file])
+                logger.info(f"Opened log file: {log_file}")
             except Exception as e:
-                logger.error(f"Failed to open log file: {e}")
-                Messagebox.show_error(
-                    "Error", 
-                    f"Could not open log file. The file is located at:\n{path}", 
-                    parent=self.root
-                )
+                logger.error(f"Failed to open log file: {str(e)}")
+                Messagebox.show_error("Error", f"Failed to open log file: {str(e)}", parent=self.root)
         else:
-            logger.warning(f"Log file does not exist: {path}")
-            Messagebox.show_warning(
-                "Warning", 
-                f"Log file not found at {path}", 
-                parent=self.root
-            )
+            Messagebox.show_warning("File Not Found", f"Log file not found: {log_file}", parent=self.root)
     
-    def show_about(self):
-        """Show the about dialog."""
-        Messagebox.show_info(
-            "About AI Old Photo Restoration Tool", 
-            "AI Old Photo Restoration Tool v1.0\n\n"
-            "This application uses Real-ESRGAN technology to restore and enhance old photos.\n\n"
-            "Built with Python, tkinter, and ttkbootstrap.\n\n"
-            "© 2025 Your Name",
-            parent=self.root
-        )
+    def zoom_in(self):
+        """Zoom in on the comparison view."""
+        self.zoom_level *= 1.2
+        self._update_zoom_level_display()
+        if hasattr(self.compare_canvas, 'original_image'):
+            self.display_comparison_with_zoom()
+
+    def zoom_out(self):
+        """Zoom out on the comparison view."""
+        self.zoom_level /= 1.2
+        # Don't allow zoom below 20%
+        if self.zoom_level < 0.2:
+            self.zoom_level = 0.2
+        self._update_zoom_level_display()
+        if hasattr(self.compare_canvas, 'original_image'):
+            self.display_comparison_with_zoom()
+            
+    def reset_zoom(self):
+        """Reset zoom and pan to default."""
+        self.zoom_level = 1.0
+        self.pan_x = 0
+        self.pan_y = 0
+        self._update_zoom_level_display()
+        if hasattr(self.compare_canvas, 'original_image'):
+            self.display_comparison_with_zoom()
+            
+    def _update_zoom_level_display(self):
+        """Update the zoom level display."""
+        zoom_percent = int(self.zoom_level * 100)
+        self.zoom_level_var.set(f"{zoom_percent}%")
+            
+    def on_mouse_wheel(self, event):
+        """Handle mouse wheel events for zooming.
+        
+        Args:
+            event: The mouse wheel event
+        """
+        if not hasattr(self.compare_canvas, 'original_image'):
+            return
+            
+        # Determine zoom direction based on event
+        if event.num == 5 or event.delta < 0:  # Scroll down
+            self.zoom_level /= 1.1
+            if self.zoom_level < 0.2:
+                self.zoom_level = 0.2
+        elif event.num == 4 or event.delta > 0:  # Scroll up
+            self.zoom_level *= 1.1
+            
+        self._update_zoom_level_display()
+        self.display_comparison_with_zoom()
+            
+    def start_pan(self, event):
+        """Start panning the image."""
+        if self.zoom_level > 1.0:
+            self.is_panning = True
+            self.last_x = event.x
+            self.last_y = event.y
+            self.compare_canvas.config(cursor="fleur")  # Change cursor to indicate panning
+            
+    def stop_pan(self, event):
+        """Stop panning the image."""
+        self.is_panning = False
+        self.compare_canvas.config(cursor="hand2")  # Reset cursor
+            
+    def pan_image(self, event):
+        """Pan the image based on mouse movement."""
+        if self.is_panning and hasattr(self.compare_canvas, 'original_image'):
+            # Calculate movement
+            dx = event.x - self.last_x
+            dy = event.y - self.last_y
+            
+            # Update pan coordinates
+            self.pan_x += dx
+            self.pan_y += dy
+            
+            # Update last position
+            self.last_x = event.x
+            self.last_y = event.y
+            
+            # Redisplay with new pan coordinates
+            self.display_comparison_with_zoom()
+            
+    def display_comparison_with_zoom(self):
+        """Display the comparison view with zoom and pan applied."""
+        if not hasattr(self.compare_canvas, 'original_image'):
+            return
+            
+        try:
+            original = self.compare_canvas.original_image
+            
+            # Get canvas dimensions
+            canvas_width = self.compare_canvas.winfo_width() or 800
+            canvas_height = self.compare_canvas.winfo_height() or 600
+            
+            # Calculate dimensions based on zoom
+            img_width, img_height = original.size
+            new_width = int(img_width * self.zoom_level)
+            new_height = int(img_height * self.zoom_level)
+            
+            # Resize image based on zoom level
+            try:
+                zoomed_image = original.resize((new_width, new_height), Image.LANCZOS)
+            except Exception:
+                # Fallback to simpler resize method
+                zoomed_image = original.resize((new_width, new_height), Image.NEAREST)
+                
+            # Convert to PhotoImage for tkinter
+            photo = ImageTk.PhotoImage(zoomed_image)
+            
+            # Keep a reference to prevent garbage collection
+            self.compare_canvas.image = photo
+            
+            # Clear canvas
+            self.compare_canvas.delete("all")
+            
+            # Center of canvas
+            center_x = canvas_width // 2
+            center_y = canvas_height // 2
+            
+            # Calculate position with pan adjustment
+            x = center_x + self.pan_x
+            y = center_y + self.pan_y
+            
+            # Draw image
+            self.compare_canvas.create_image(x, y, anchor=CENTER, image=photo)
+            
+        except Exception as e:
+            logger.error(f"Error in display_comparison_with_zoom: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            self.show_canvas_message(self.compare_canvas, f"Error displaying zoomed image: {str(e)}")
 
 
 def main():
